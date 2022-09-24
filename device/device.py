@@ -23,6 +23,7 @@ class Device:
         if type(name) == str:
             return wr
         else:
+            func = name
             name = name.__name__
         return wr(func)
 
