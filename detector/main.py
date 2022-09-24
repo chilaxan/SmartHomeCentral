@@ -14,7 +14,7 @@ root.withdraw()
 WIDTH, HEIGHT = root.winfo_screenwidth(), root.winfo_screenheight()
 
 API_URL = 'http://chilaxan.tech/'
-DEVICE_SLUG = '{user}/{device}/{action}'
+SEND_ACTION_SLUG = '{user}/{device}/{action}'
 PASSWORD = 'best-password-ever'
 
 debug = len(sys.argv) == 2 and sys.argv[1] == 'debug'
@@ -28,7 +28,7 @@ layout = [[sg.VPush(background_color = None)],
           [sg.Text('🔇', key='speaker', font='Any 30', pad=(0,0))],
           [sg.Text('No One Detected', key='-OUTPUT-', font='Any 30', pad=(0,0))],
           [sg.Text('Device List:', font='Any 30', pad=(0,0))],
-          [sg.VSeperator()],
+          [sg.Text('_'*30)],
           [sg.Text('', key='-DEVICE LIST-', font='Any 20', pad=(0,0))],
           [sg.VPush(background_color = None)],
           [sg.Output(size=(60,15))],
@@ -160,7 +160,7 @@ def do_user(username, window):
     print(f'sending [{action}] to [{device}]')
 
     try:requests.post(
-        API_URL + DEVICE_SLUG.format(
+        API_URL + SEND_ACTION_SLUG.format(
             user=urllib.parse.quote(username),
             device=urllib.parse.quote(device),
             action=urllib.parse.quote(action)
