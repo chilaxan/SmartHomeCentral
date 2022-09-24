@@ -2,30 +2,62 @@ import sys
 import requests
 import PySimpleGUI as sg
 import time
+import urllib.parse
 
-device = sys.argv[1]
+device, on_command, off_command, on_text, off_text = sys.argv[1:]
 PASSWORD = 'best-password-ever'
+API_URL = 'http://chilaxan.tech/{device}'
 
-layout = [[sg.Text(device)],
-          [sg.Text(size=(40,1), key='-OUTPUT-')],
-          [sg.Button('Ok'), sg.Button('Quit')]]
+layout = [[sg.VPush(background_color = None)],
+          [sg.Text(device, font='Any 100', pad=(0,0))],
+          [sg.VPush(background_color = None)],
+          [sg.Text(key='-OUTPUT-', font='Any 200', pad=(0,0))],
+          [sg.VPush(background_color = None)],
+          [sg.Button('Quit', font='Any 50', pad=(0,0))],
+          [sg.VPush(background_color = None)]]
+
+def update_all_colors(window, color):
+    for element in window.element_list():
+        try:
+            element.Widget.config(background=color)
+            element.Widget.config(highlightbackground=color)
+            element.Widget.config(highlightcolor=color)
+            element.Widget.ParentRowFrame.config(background=color)
+        except:pass
+    window.TKroot.configure(background=color)
 
 # Create the window
-window = sg.Window('Device', layout)
-
+window = sg.Window(
+    'Device',
+    layout,
+    element_justification='c',
+    no_titlebar=True,
+    location=(0,0),
+    size=(1440,890),
+    keep_on_top=True,
+    background_color='black'
+).Finalize()
+window.Maximize()
+update_all_colors(window, 'red')
+window['-OUTPUT-'].update(off_text)
 # Display and interact with the Window using an Event Loop
 while True:
-    event, values = window.read()
+    event, values = window.read(timeout=100)
     # See if user wants to quit or window was closed
+    command = requests.get(API_URL.format(device=urllib.parse.quote(device)), headers={
+        'x-secret': PASSWORD
+    }).content.decode()
+    if command == on_command:
+        update_all_colors(window, 'green')
+        window['-OUTPUT-'].update(on_text)
+    elif command == off_command:
+        update_all_colors(window, 'red')
+        window['-OUTPUT-'].update(off_text)
     if event == sg.WINDOW_CLOSED or event == 'Quit':
         break
 
-    time.sleep(1)
-    window['-OUTPUT-'].update(requests.get(API_URL.format(device=urllib.parse.quote(device)), headers={
-        'x-secret': PASSWORD
-    }).content.decode())
+    #time.sleep(.1)
     # Output a message to the window
-    window['-OUTPUT-'].update('Hello ' + values['-INPUT-'] + "! Thanks for trying PySimpleGUI")
 
 # Finish up by removing from the screen
 window.close()

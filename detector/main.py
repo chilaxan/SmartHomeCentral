@@ -62,13 +62,16 @@ def main():
     video_capture.release()
     cv2.destroyAllWindows()
 
+n = 0
 def do_user(username):
+    global n
     # talk to user
     # say: Hello, {username}
     # say: What would you like to do?
     # if user says "nothing", do nothing
     device = 'device'
-    action = 'do something'
+    action = f'do something: {n}'
+    n += 1
     print(device, action)
 
     try:requests.post(
