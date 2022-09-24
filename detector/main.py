@@ -8,6 +8,8 @@ import pyaudio
 import PySimpleGUI as sg
 import sys
 
+sg.Window._move_all_windows = True
+
 import tkinter
 root = tkinter.Tk()
 root.withdraw()
@@ -30,11 +32,13 @@ layout = [[sg.VPush(background_color = None)],
           [sg.Text('Device List:', font='Any 30', pad=(0,0))],
           [sg.Text('_'*30)],
           [sg.Text('', key='-DEVICE LIST-', font='Any 20', pad=(0,0))],
-          [sg.VPush(background_color = None)],
-          [sg.Output(size=(60,15))],
+          # [sg.VPush(background_color = None)],
+          # [sg.Output(size=(60,15))],
           [sg.VPush(background_color = None)],
           [sg.Button('Quit', font='Any 20', pad=(0,0))],
           [sg.VPush(background_color = None)]]
+
+load_layout = [[sg.Image('Logo.png')]]
 
 def main():
     video_capture = cv2.VideoCapture(0)
@@ -44,6 +48,14 @@ def main():
         element_justification='c',
         size=(WIDTH, HEIGHT)
     ).Finalize()
+
+    loading = sg.Window(
+        'Loading',
+        load_layout,
+        element_justification='c',
+        size=(400, 400)
+    ).Finalize()
+    loading.refresh()
 
     known_encodings = []
     known_users = []
@@ -103,9 +115,12 @@ def main():
             cv2.imshow('Debug', small_frame)
 
         if names:
-            window['-OUTPUT-'].update(f"Hey, {','.join(map(str.title, names))}, what would you like to do?")
+            window['-OUTPUT-'].update(f"Hey, {', '.join(map(str.title, names))}, what would you like to do?")
         else:
             window['-OUTPUT-'].update('No One Detected')
+        try:
+            loading.close()
+        except:pass
         event, values = window.read(timeout=200)
         if event == sg.WINDOW_CLOSED or event == 'Quit':
             break
@@ -141,7 +156,11 @@ def do_user(username, window):
     response = response.split()
     action = None
     device = None
-    conf = requests.get(API_URL).json()
+    try:
+        conf = requests.get(API_URL).json()
+    except Exception:
+        print('failed to communicate with api')
+        return
     for dev, actions in conf.items():
         if dev in response:
             device = dev
