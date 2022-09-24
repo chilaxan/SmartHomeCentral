@@ -18,6 +18,8 @@ rec.energy_threshold = 400
 layout = [[sg.VPush(background_color = None)],
           [sg.Text('No One Detected', key='-OUTPUT-', font='Any 30', pad=(0,0))],
           [sg.VPush(background_color = None)],
+          [sg.Output(size=(60,15))],
+          [sg.VPush(background_color = None)],
           [sg.Button('Quit', font='Any 20', pad=(0,0))],
           [sg.VPush(background_color = None)]]
 
@@ -105,7 +107,6 @@ def do_user(username):
         try:
             audio = rec.listen(source)
             response = rec.recognize_google(audio)
-            print(response)
         except Exception as e:
             print(e)
 
@@ -127,7 +128,7 @@ def do_user(username):
     if not action or not device:
         return
 
-    print(device, action)
+    print(f'sending [{action}] to [{device}]')
 
     try:requests.post(
         API_URL.format(
