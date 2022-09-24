@@ -6,9 +6,12 @@ import urllib.parse
 import speech_recognition as sr
 import pyaudio
 import PySimpleGUI as sg
+import sys
 
 API_URL = 'http://chilaxan.tech/{user}/{device}/{action}'
 PASSWORD = 'best-password-ever'
+
+debug = len(sys.argv) == 2 and sys.argv[1] == 'debug'
 
 mic = sr.Microphone()
 rec = sr.Recognizer()
@@ -56,24 +59,25 @@ def main():
                 name = known_users[first_match_index]
                 names.append(name)
 
-        # Display the resulting image
-        for (top, right, bottom, left), name in zip(face_locations, names):
-            # Scale back up face locations since the frame we detected in was scaled to 1/4 size
+        if debug:
+            # Display the resulting image
+            for (top, right, bottom, left), name in zip(face_locations, names):
+                # Scale back up face locations since the frame we detected in was scaled to 1/4 size
 
-            face_image = small_frame[top:bottom, left:right]
+                face_image = small_frame[top:bottom, left:right]
 
-            # Blur the face image
-            face_image = cv2.GaussianBlur(face_image, (99, 99), 30)
+                # Blur the face image
+                face_image = cv2.GaussianBlur(face_image, (99, 99), 30)
 
-            # Put the blurred face region back into the frame image
-            small_frame[top:bottom, left:right] = face_image
+                # Put the blurred face region back into the frame image
+                small_frame[top:bottom, left:right] = face_image
 
-            # Draw a label with a name below the face
-            font = cv2.FONT_HERSHEY_DUPLEX
-            cv2.putText(small_frame, name, (left + 6, bottom - 6), font, .5, (255, 255, 255), 1)
+                # Draw a label with a name below the face
+                font = cv2.FONT_HERSHEY_DUPLEX
+                cv2.putText(small_frame, name, (left + 6, bottom - 6), font, .5, (255, 255, 255), 1)
 
-        # Display the resulting image
-        cv2.imshow('Debug', small_frame)
+            # Display the resulting image
+            cv2.imshow('Debug', small_frame)
 
         if names:
             window['-OUTPUT-'].update(f"Hey, {','.join(map(str.title, names))}, what would you like to do?")
