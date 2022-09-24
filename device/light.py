@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 import os
+from device import Device
 
 import tkinter
 root = tkinter.Tk()
