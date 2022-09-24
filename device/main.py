@@ -13,7 +13,7 @@ device, on_command, off_command, on_text, off_text = sys.argv[1:]
 layout = [[sg.VPush(background_color = None)],
           [sg.Text(device, font='Any 100', pad=(0,0))],
           [sg.VPush(background_color = None)],
-          [sg.Text(key='-OUTPUT-', font='Any 200', pad=(0,0))],
+          [sg.Text(key='-OUTPUT-', font='Any 150', pad=(0,0))],
           [sg.VPush(background_color = None)],
           [sg.Button('Quit', font='Any 50', pad=(0,0))],
           [sg.VPush(background_color = None)]]
