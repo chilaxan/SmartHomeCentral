@@ -71,4 +71,10 @@ class Device:
                 print('couldn\'t communicate with api')
             if self.check_exit():
                 break
+        try:
+            requests.post(API_URL + f'unregister/{self.dev_id}', headers={
+                'x-secret': PASSWORD
+            }, json={})
+        except Exception:
+            print('couldn\'t communicate with api')
         self.clean()

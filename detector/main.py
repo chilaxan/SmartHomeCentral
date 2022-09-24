@@ -25,7 +25,11 @@ rec.dynamic_energy_threshold = False
 rec.energy_threshold = 400
 
 layout = [[sg.VPush(background_color = None)],
-          [sg.Text('No One Detected', key='-OUTPUT-', font='Any 30', pad=(0,0)), sg.Text('🔇', key='speaker', font='Any 30', pad=(0,0))],
+          [sg.Text('🔇', key='speaker', font='Any 30', pad=(0,0))],
+          [sg.Text('No One Detected', key='-OUTPUT-', font='Any 30', pad=(0,0))],
+          [sg.Text('Device List:', font='Any 30', pad=(0,0))],
+          [sg.VSeperator()],
+          [sg.Text('', key='-DEVICE LIST-', font='Any 20', pad=(0,0))],
           [sg.VPush(background_color = None)],
           [sg.Output(size=(60,15))],
           [sg.VPush(background_color = None)],
@@ -40,6 +44,7 @@ def main():
         element_justification='c',
         size=(WIDTH, HEIGHT)
     ).Finalize()
+
     known_encodings = []
     known_users = []
     for img in os.listdir('users'):
@@ -64,6 +69,18 @@ def main():
                 first_match_index = matches.index(True)
                 name = known_users[first_match_index]
                 names.append(name)
+
+        try:
+            conf = requests.get(API_URL).json()
+            listing = ''
+            for dev, actions in conf.items():
+                listing += dev + ': '
+                if actions is None:
+                    listing += '*\n'
+                else:
+                    listing += ', '.join(actions) + '\n'
+            window['-DEVICE LIST-'].update(listing)
+        except Exception:print('failed to communicate with api')
 
         if debug:
             # Display the resulting image
@@ -152,7 +169,7 @@ def do_user(username, window):
             'x-secret': PASSWORD
         }
     )
-    except:print('failed to communicate with api')
+    except Exception:print('failed to communicate with api')
 
 if __name__ == '__main__':
     main()

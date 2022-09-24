@@ -40,4 +40,11 @@ def register_root(device):
         devices[device] = None
     return ''
 
+@app.route('/unregister/<device>', methods=['POST'])
+def unregister(device):
+    if auth_guard():
+        if device in devices:
+            devices.pop(device)
+    return ''
+
 app.run(host='0.0.0.0', port=80)
