@@ -9,7 +9,7 @@ WIDTH, HEIGHT = root.winfo_screenwidth(), root.winfo_screenheight()
 
 window = sg.Window(
     'Device',
-    [[sg.Text(background_color=None)]],
+    [[]],
     element_justification='c',
     no_titlebar=True,
     location=(0,0),
@@ -17,18 +17,15 @@ window = sg.Window(
     keep_on_top=True,
     background_color='black'
 ).Finalize()
-window.Maximize()
 
 dev = Device('light')
 
 @dev.register
 def on():
-    os.system('xbacklight -set 100')
     window.TKroot.configure(background='white')
 
 @dev.register
 def off():
-    os.system('xbacklight -set 0')
     window.TKroot.configure(background='black')
 
 @dev.register
