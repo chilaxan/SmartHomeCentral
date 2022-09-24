@@ -11,6 +11,7 @@ class Device:
         self.dispatch = {}
         self.events = []
         self.check_exit = lambda:None
+        self.clean = lambda:None
 
     def register(self, name):
         def wr(func):
@@ -32,6 +33,10 @@ class Device:
         self.check_exit = func
         return func
 
+    def cleanup(self, func):
+        self.clean = func
+        return func
+
     def run(self):
         try:
             requests.post(API_URL + f'register/{self.dev_id}', headers={
@@ -51,3 +56,4 @@ class Device:
                 print('couldn\'t communicate with api')
             if self.check_exit():
                 break
+        self.clean()
