@@ -34,7 +34,7 @@ def register(device):
     return ''
 
 @app.route('/register_root/<device>', methods=['POST'])
-def register(device):
+def register_root(device):
     if auth_guard():
         data = request.get_json(force=True)
         devices[device] = None
