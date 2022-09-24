@@ -50,6 +50,9 @@ def do_user(username):
     device = username + ':device lol'
     action = 'do something'
 
-    requests.POST(API_URL.format(device=urllib.parse.quote(device), action=urllib.parse.quote(action)), headers={
+    requests.post(API_URL.format(device=urllib.parse.quote(device), action=urllib.parse.quote(action)), headers={
         'x-secret': 'best-password-ever'
     })
+
+if __name__ == '__main__':
+    main()
