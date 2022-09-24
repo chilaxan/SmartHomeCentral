@@ -55,7 +55,7 @@ while True:
     event, values = window.read(timeout=200)
     # See if user wants to quit or window was closed
     try:
-        command = requests.get(API_URL.format(device=urllib.parse.quote(device)), headers={
+        command = requests.get(API_URL + DEVICE_SLUG.format(device=urllib.parse.quote(device)), headers={
             'x-secret': PASSWORD
         }).content.decode()
         if command == on_command:

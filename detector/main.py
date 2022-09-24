@@ -111,7 +111,7 @@ def do_user(username, window):
         try:
             window['speaker'].update('🔊')
             window.refresh()
-            audio = rec.listen(source)
+            audio = rec.listen(source, phrase_time_limit=5)
             window['speaker'].update('🔇')
             window.refresh()
             response = rec.recognize_google(audio)
