@@ -49,10 +49,10 @@ class Device:
                     'x-secret': PASSWORD
                 }, json=[*self.dispatch])
             else:
-                print(requests.post(API_URL + f'register_root/{self.dev_id}', headers={
+                requests.post(API_URL + f'register_root/{self.dev_id}', headers={
                     'x-secret': PASSWORD
-                }, json={}))
-        except:
+                }, json={})
+        except Exception:
             raise RuntimeError('Failed To Register Device') from None
         while True:
             for event in self.events:
@@ -67,7 +67,7 @@ class Device:
                     self.root(command)
                 else:
                     self.dispatch.get(command, lambda:None)()
-            except:
+            except Exception:
                 print('couldn\'t communicate with api')
             if self.check_exit():
                 break
