@@ -4,6 +4,11 @@ import PySimpleGUI as sg
 import time
 import urllib.parse
 
+import tkinter
+root = tkinter.Tk()
+root.withdraw()
+WIDTH, HEIGHT = root.winfo_screenwidth(), root.winfo_screenheight()
+
 device, on_command, off_command, on_text, off_text = sys.argv[1:]
 PASSWORD = 'best-password-ever'
 API_URL = 'http://chilaxan.tech/{device}'
@@ -33,7 +38,7 @@ window = sg.Window(
     element_justification='c',
     no_titlebar=True,
     location=(0,0),
-    size=(1440,890),
+    size=(WIDTH,HEIGHT),
     keep_on_top=True,
     background_color='black'
 ).Finalize()
@@ -44,15 +49,18 @@ window['-OUTPUT-'].update(off_text)
 while True:
     event, values = window.read(timeout=200)
     # See if user wants to quit or window was closed
-    command = requests.get(API_URL.format(device=urllib.parse.quote(device)), headers={
-        'x-secret': PASSWORD
-    }).content.decode()
-    if command == on_command:
-        update_all_colors(window, 'green')
-        window['-OUTPUT-'].update(on_text)
-    elif command == off_command:
-        update_all_colors(window, 'red')
-        window['-OUTPUT-'].update(off_text)
+    try:
+        command = requests.get(API_URL.format(device=urllib.parse.quote(device)), headers={
+            'x-secret': PASSWORD
+        }).content.decode()
+        if command == on_command:
+            update_all_colors(window, 'green')
+            window['-OUTPUT-'].update(on_text)
+        elif command == off_command:
+            update_all_colors(window, 'red')
+            window['-OUTPUT-'].update(off_text)
+    except:
+        print('couldn\'t communicate with api')
     if event == sg.WINDOW_CLOSED or event == 'Quit':
         break
 
