@@ -5,6 +5,7 @@ import requests
 import urllib.parse
 
 API_URL = 'http://chilaxan.tech/{device}/{action}'
+PASSWORD = 'best-password-ever'
 
 def main():
     video_capture = cv2.VideoCapture(0)
@@ -47,12 +48,12 @@ def do_user(username):
     # say: Hello, {username}
     # say: What would you like to do?
     # if user says "nothing", do nothing
-    device = username + ':device lol'
+    device = input('device: ')
     action = 'do something'
     print(device, action)
 
     requests.post(API_URL.format(device=urllib.parse.quote(device), action=urllib.parse.quote(action)), headers={
-        'x-secret': 'best-password-ever'
+        'x-secret': PASSWORD
     })
 
 if __name__ == '__main__':
