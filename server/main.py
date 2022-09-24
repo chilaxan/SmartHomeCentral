@@ -16,7 +16,6 @@ def root():
 @app.route('/<user>/<device>/<action>', methods=['POST'])
 def do_action(user, device, action):
     if auth_guard():
-        print('Got:', user, device, action)
         queue.setdefault(device, []).append(action)
     return ''
 
