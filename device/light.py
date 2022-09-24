@@ -8,7 +8,7 @@ WIDTH, HEIGHT = root.winfo_screenwidth(), root.winfo_screenheight()
 
 window = sg.Window(
     'Device',
-    layout,
+    [],
     element_justification='c',
     no_titlebar=True,
     location=(0,0),
