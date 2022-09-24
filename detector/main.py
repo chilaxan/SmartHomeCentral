@@ -52,9 +52,16 @@ def do_user(username):
     action = 'do something'
     print(device, action)
 
-    requests.post(API_URL.format(user=username, device=urllib.parse.quote(device), action=urllib.parse.quote(action)), headers={
-        'x-secret': PASSWORD
-    })
+    requests.post(
+        API_URL.format(
+            user=urllib.parse.quote(username),
+            device=urllib.parse.quote(device),
+            action=urllib.parse.quote(action)
+        ),
+        headers={
+            'x-secret': PASSWORD
+        }
+    )
 
 if __name__ == '__main__':
     main()
