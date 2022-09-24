@@ -25,7 +25,7 @@ def update_all_colors(window, color):
             element.Widget.config(highlightbackground=color)
             element.Widget.config(highlightcolor=color)
             element.Widget.ParentRowFrame.config(background=color)
-        except:pass
+        except Exception:pass
     window.TKroot.configure(background=color)
 
 # Create the window
@@ -42,7 +42,6 @@ window = sg.Window(
 window.Maximize()
 update_all_colors(window, 'red')
 window['-OUTPUT-'].update(off_text)
-# Display and interact with the Window using an Event Loop
 
 dev = Device(device)
 
