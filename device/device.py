@@ -12,6 +12,7 @@ class Device:
         self.events = []
         self.check_exit = lambda:None
         self.clean = lambda:None
+        self.root = None
 
     def register(self, name):
         def wr(func):
@@ -24,6 +25,10 @@ class Device:
         else:
             name = name.__name__
         return wr(func)
+
+    def register_root(self, func):
+        self.root = func
+        return func
 
     def loop(self, func):
         self.events.append(func)
@@ -39,9 +44,14 @@ class Device:
 
     def run(self):
         try:
-            requests.post(API_URL + f'register/{self.dev_id}', headers={
-                'x-secret': PASSWORD
-            }, json=[*self.dispatch])
+            if not self.root:
+                requests.post(API_URL + f'register/{self.dev_id}', headers={
+                    'x-secret': PASSWORD
+                }, json=[*self.dispatch])
+            else:
+                requests.post(API_URL + f'register_root/{self.dev_id}', headers={
+                    'x-secret': PASSWORD
+                })
         except:
             raise RuntimeError('Failed To Register Device') from None
         while True:
@@ -51,7 +61,12 @@ class Device:
                 command = requests.get(API_URL + DEVICE_SLUG.format(device=urllib.parse.quote(self.dev_id)), headers={
                     'x-secret': PASSWORD
                 }).content.decode()
-                self.dispatch.get(command, lambda:None)()
+                if command == 'Unknown Device':
+                    continue
+                if self.root:
+                    self.root(command)
+                else:
+                    self.dispatch.get(command, lambda:None)()
             except:
                 print('couldn\'t communicate with api')
             if self.check_exit():

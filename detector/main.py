@@ -128,6 +128,9 @@ def do_user(username, window):
     for dev, actions in conf.items():
         if dev in response:
             device = dev
+            if actions is None:
+                action = ' '.join(response)
+                break
             for act in actions:
                 if act in response:
                     action = act

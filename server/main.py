@@ -33,4 +33,11 @@ def register(device):
         devices[device] = data
     return ''
 
+@app.route('/register_root/<device>', methods=['POST'])
+def register(device):
+    if auth_guard():
+        data = request.get_json(force=True)
+        devices[device] = None
+    return ''
+
 app.run(host='0.0.0.0', port=80)
