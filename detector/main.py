@@ -40,7 +40,11 @@ def main():
             if True in matches:
                 first_match_index = matches.index(True)
                 name = known_users[first_match_index]
-                do_user(name)
+                try:
+                    do_user(name)
+                except Exception as e:
+                    if e.args[0] == 'Quit':
+                        video_capture.release()
                 h, w, c = frame.shape
                 cv2.putText(
                     frame,
@@ -61,6 +65,15 @@ def main():
             right *= 4
             bottom *= 4
             left *= 4
+
+            face_image = frame[top:bottom, left:right]
+
+            # Blur the face image
+            face_image = cv2.GaussianBlur(face_image, (99, 99), 30)
+
+            # Put the blurred face region back into the frame image
+            frame[top:bottom, left:right] = face_image
+
             # Draw a box around the face
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 
@@ -96,6 +109,8 @@ def do_user(username):
         return
 
     response = response.split()
+    if 'quit' in response:
+        raise Exception('Quit')
     action = None
     device = None
     for dev, actions in conf.items():
