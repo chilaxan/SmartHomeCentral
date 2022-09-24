@@ -11,4 +11,4 @@ def do_action(device, action):
     print(device, action)
     return ''
 
-app.run(port=80)
+app.run(host='0.0.0.0', port=80)
