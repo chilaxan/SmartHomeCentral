@@ -7,7 +7,7 @@ app = Flask(__name__)
 queue = {}
 
 def auth_guard():
-    return request.headers.get('x-secret', '') == PASSWORD:
+    return request.headers.get('x-secret', '') == PASSWORD
 
 @app.route('/')
 def root():
