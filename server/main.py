@@ -23,7 +23,7 @@ def do_action(device, action):
 @app.route('/<device>', methods=['GET'])
 def get_action(device):
     if auth_guard():
-        return (queue.get(device, ['Unkown Device']) or ['None']).pop()
+        return (queue.get(device, ['Unkown Device']) or ['Unkown Device']).pop()
     return 'Unauthorized'
 
 app.run(host='0.0.0.0', port=80)
