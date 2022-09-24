@@ -24,7 +24,7 @@ rec.dynamic_energy_threshold = False
 rec.energy_threshold = 400
 
 layout = [[sg.VPush(background_color = None)],
-          [sg.Text('No One Detected', key='-OUTPUT-', font='Any 30', pad=(0,0))],
+          [sg.Text('No One Detected', key='-OUTPUT-', font='Any 30', pad=(0,0)), sg.Text('🔇', key='speaker', font='Any 30', pad=(0,0))],
           [sg.VPush(background_color = None)],
           [sg.Output(size=(60,15))],
           [sg.VPush(background_color = None)],
@@ -93,7 +93,7 @@ def main():
             break
 
         if names:
-            do_user(names[0])
+            do_user(names[0], window)
 
         # Hit 'q' on the keyboard to quit!
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -105,12 +105,16 @@ def main():
 
 from device_config import conf
 
-def do_user(username):
+def do_user(username, window):
     response = ''
     with mic as source:
         rec.adjust_for_ambient_noise(source)
         try:
+            window['speaker'].update('🔊')
+            window.refresh()
             audio = rec.listen(source)
+            window['speaker'].update('🔇')
+            window.refresh()
             response = rec.recognize_google(audio)
         except Exception as e:
             print(e)
