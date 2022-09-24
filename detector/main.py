@@ -13,7 +13,7 @@ def main():
     for img in os.listdir('users'):
         image = face_recognition.load_image_file(f'users/{img}')
         known_encodings.append(face_recognition.face_encodings(image)[0])
-        known_users.append(img.strip('.png'))
+        known_users.append(img[:-4])
 
     while video_capture.isOpened():
         ret, frame = video_capture.read()
@@ -49,6 +49,7 @@ def do_user(username):
     # if user says "nothing", do nothing
     device = username + ':device lol'
     action = 'do something'
+    print(device, action)
 
     requests.post(API_URL.format(device=urllib.parse.quote(device), action=urllib.parse.quote(action)), headers={
         'x-secret': 'best-password-ever'
