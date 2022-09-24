@@ -62,12 +62,11 @@ class Device:
                 command = requests.get(API_URL + DEVICE_SLUG.format(device=urllib.parse.quote(self.dev_id)), headers={
                     'x-secret': PASSWORD
                 }).content.decode()
-                if command == 'Unknown Device':
-                    continue
-                if self.root:
-                    self.root(command)
-                else:
-                    self.dispatch.get(command, lambda:None)()
+                if command != 'Unknown Device':
+                    if self.root:
+                        self.root(command)
+                    else:
+                        self.dispatch.get(command, lambda:None)()
             except Exception:
                 print('couldn\'t communicate with api')
             if self.check_exit():

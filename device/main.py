@@ -62,6 +62,7 @@ def read_window():
 
 @dev.end_when
 def check():
+    print(event)
     return event == sg.WINDOW_CLOSED or event == 'Quit'
 
 dev.run()
