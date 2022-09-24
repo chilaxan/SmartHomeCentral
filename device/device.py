@@ -49,9 +49,9 @@ class Device:
                     'x-secret': PASSWORD
                 }, json=[*self.dispatch])
             else:
-                requests.post(API_URL + f'register_root/{self.dev_id}', headers={
+                print(requests.post(API_URL + f'register_root/{self.dev_id}', headers={
                     'x-secret': PASSWORD
-                })
+                }).content)
         except:
             raise RuntimeError('Failed To Register Device') from None
         while True:
