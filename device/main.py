@@ -1,22 +1,14 @@
 import sys
-import requests
 import PySimpleGUI as sg
-import time
-import urllib.parse
 
 import tkinter
 root = tkinter.Tk()
 root.withdraw()
 WIDTH, HEIGHT = root.winfo_screenwidth(), root.winfo_screenheight()
 
-device, on_command, off_command, on_text, off_text = sys.argv[1:]
-PASSWORD = 'best-password-ever'
-API_URL = 'http://chilaxan.tech/'
-DEVICE_SLUG = '{device}'
+from device import Device
 
-requests.post(API_URL + f'register/{device}', headers={
-    'x-secret': PASSWORD
-}, json=[on_command, off_command])
+device, on_command, off_command, on_text, off_text = sys.argv[1:]
 
 layout = [[sg.VPush(background_color = None)],
           [sg.Text(device, font='Any 100', pad=(0,0))],
@@ -51,26 +43,29 @@ window.Maximize()
 update_all_colors(window, 'red')
 window['-OUTPUT-'].update(off_text)
 # Display and interact with the Window using an Event Loop
-while True:
-    event, values = window.read(timeout=200)
-    # See if user wants to quit or window was closed
-    try:
-        command = requests.get(API_URL + DEVICE_SLUG.format(device=urllib.parse.quote(device)), headers={
-            'x-secret': PASSWORD
-        }).content.decode()
-        if command == on_command:
-            update_all_colors(window, 'green')
-            window['-OUTPUT-'].update(on_text)
-        elif command == off_command:
-            update_all_colors(window, 'red')
-            window['-OUTPUT-'].update(off_text)
-    except:
-        print('couldn\'t communicate with api')
-    if event == sg.WINDOW_CLOSED or event == 'Quit':
-        break
 
-    #time.sleep(.1)
-    # Output a message to the window
+dev = Device(device)
+
+@dev.register(name=on_command)
+def on_com():
+    update_all_colors(window, 'green')
+    window['-OUTPUT-'].update(on_text)
+
+@dev.register(name=off_command)
+def off_com():
+    update_all_colors(window, 'red')
+    window['-OUTPUT-'].update(off_text)
+
+@dev.loop
+def read_window():
+    global event, values
+    event, values = window.read(timeout=200)
+
+@dev.end_when
+def check():
+    return event == sg.WINDOW_CLOSED or event == 'Quit'
+
+dev.run()
 
 # Finish up by removing from the screen
 window.close()
