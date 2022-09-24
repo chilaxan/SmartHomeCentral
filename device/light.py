@@ -17,6 +17,7 @@ window = sg.Window(
     keep_on_top=True,
     background_color='black'
 ).Finalize()
+window.Maximize()
 
 dev = Device('light')
 
