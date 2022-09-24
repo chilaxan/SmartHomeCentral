@@ -12,7 +12,18 @@ while cap.isOpened():
     ret, frame = cap.read()
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
 
-    cv2.imshow('frame', rgb)
+    h, w, c = rgb.shape
+    cv2.putText(
+        rgb,
+        "Click here and press q to take a picture",
+        (20, int(h) - 10),
+        cv2.FONT_HERSHEY_DUPLEX,
+        1,
+        (0, 255, 0),
+        3
+    )
+
+    cv2.imshow('Setup', rgb)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         out = cv2.imwrite(f'users/{user}.png', frame)
         break
