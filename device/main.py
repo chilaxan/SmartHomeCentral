@@ -42,7 +42,7 @@ update_all_colors(window, 'red')
 window['-OUTPUT-'].update(off_text)
 # Display and interact with the Window using an Event Loop
 while True:
-    event, values = window.read(timeout=100)
+    event, values = window.read(timeout=200)
     # See if user wants to quit or window was closed
     command = requests.get(API_URL.format(device=urllib.parse.quote(device)), headers={
         'x-secret': PASSWORD

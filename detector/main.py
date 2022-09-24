@@ -3,9 +3,18 @@ import cv2
 import os
 import requests
 import urllib.parse
+import speech_recognition as sr
+import pyaudio
+import time
+import threading
 
 API_URL = 'http://chilaxan.tech/{user}/{device}/{action}'
 PASSWORD = 'best-password-ever'
+
+mic = sr.Microphone()
+rec = sr.Recognizer()
+rec.dynamic_energy_threshold = False
+rec.energy_threshold = 400
 
 def main():
     video_capture = cv2.VideoCapture(0)
@@ -21,7 +30,6 @@ def main():
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
         face_locations = face_recognition.face_locations(small_frame, model="cnn")
         face_encodings = face_recognition.face_encodings(small_frame, face_locations)
-
         # Display the results
         names = []
         for face_encoding in face_encodings:
@@ -33,6 +41,16 @@ def main():
                 first_match_index = matches.index(True)
                 name = known_users[first_match_index]
                 do_user(name)
+                h, w, c = frame.shape
+                cv2.putText(
+                    frame,
+                    f"Hey, {name.title()}, what would you like to do?",
+                    (20, int(h) - 10),
+                    cv2.FONT_HERSHEY_DUPLEX,
+                    1,
+                    (0, 255, 0),
+                    3
+                )
 
             names.append(name)
 
@@ -43,7 +61,6 @@ def main():
             right *= 4
             bottom *= 4
             left *= 4
-
             # Draw a box around the face
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 
@@ -62,16 +79,37 @@ def main():
     video_capture.release()
     cv2.destroyAllWindows()
 
-n = 0
+from device_config import conf
+
 def do_user(username):
-    global n
-    # talk to user
-    # say: Hello, {username}
-    # say: What would you like to do?
-    # if user says "nothing", do nothing
-    device = 'device'
-    action = f'do something: {n}'
-    n += 1
+    response = ''
+    with mic as source:
+        rec.adjust_for_ambient_noise(source)
+        try:
+            audio = rec.listen(source)
+            response = rec.recognize_google(audio)
+            print(response)
+        except Exception as e:
+            print(e)
+
+    if not response:
+        return
+
+    response = response.split()
+    action = None
+    device = None
+    for dev, actions in conf.items():
+        if dev in response:
+            device = dev
+            for act in actions:
+                if act in response:
+                    action = act
+                    break
+            break
+
+    if not action or not device:
+        return
+
     print(device, action)
 
     try:requests.post(
