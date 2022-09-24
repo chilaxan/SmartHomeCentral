@@ -4,7 +4,7 @@ import os
 import requests
 import urllib.parse
 
-API_URL = 'http://chilaxan.tech/{device}/{action}'
+API_URL = 'http://chilaxan.tech/{user}/{device}/{action}'
 PASSWORD = 'best-password-ever'
 
 def main():
@@ -52,7 +52,7 @@ def do_user(username):
     action = 'do something'
     print(device, action)
 
-    requests.post(API_URL.format(device=urllib.parse.quote(device), action=urllib.parse.quote(action)), headers={
+    requests.post(API_URL.format(user=username, device=urllib.parse.quote(device), action=urllib.parse.quote(action)), headers={
         'x-secret': PASSWORD
     })
 

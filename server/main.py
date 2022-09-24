@@ -13,10 +13,10 @@ def auth_guard():
 def root():
     return 'Hello World'
 
-@app.route('/<device>/<action>', methods=['POST'])
-def do_action(device, action):
+@app.route('/<user>/<device>/<action>', methods=['POST'])
+def do_action(user, device, action):
     if auth_guard():
-        print('Got:', device, action)
+        print('Got:', user, device, action)
         queue.setdefault(device, []).append(action)
     return ''
 
