@@ -11,7 +11,12 @@ WIDTH, HEIGHT = root.winfo_screenwidth(), root.winfo_screenheight()
 
 device, on_command, off_command, on_text, off_text = sys.argv[1:]
 PASSWORD = 'best-password-ever'
-API_URL = 'http://chilaxan.tech/{device}'
+API_URL = 'http://chilaxan.tech/'
+DEVICE_SLUG = '{device}'
+
+requests.post(API_URL + f'register/{device}', headers={
+    'x-secret': PASSWORD
+}, json=[on_command, off_command])
 
 layout = [[sg.VPush(background_color = None)],
           [sg.Text(device, font='Any 100', pad=(0,0))],

@@ -13,7 +13,8 @@ root = tkinter.Tk()
 root.withdraw()
 WIDTH, HEIGHT = root.winfo_screenwidth(), root.winfo_screenheight()
 
-API_URL = 'http://chilaxan.tech/{user}/{device}/{action}'
+API_URL = 'http://chilaxan.tech/'
+DEVICE_SLUG = '{user}/{device}/{action}'
 PASSWORD = 'best-password-ever'
 
 debug = len(sys.argv) == 2 and sys.argv[1] == 'debug'
@@ -103,8 +104,6 @@ def main():
     cv2.destroyAllWindows()
     window.close()
 
-from device_config import conf
-
 def do_user(username, window):
     response = ''
     with mic as source:
@@ -125,6 +124,7 @@ def do_user(username, window):
     response = response.split()
     action = None
     device = None
+    conf = requests.get(API_URL).json()
     for dev, actions in conf.items():
         if dev in response:
             device = dev
@@ -140,7 +140,7 @@ def do_user(username, window):
     print(f'sending [{action}] to [{device}]')
 
     try:requests.post(
-        API_URL.format(
+        API_URL + DEVICE_SLUG.format(
             user=urllib.parse.quote(username),
             device=urllib.parse.quote(device),
             action=urllib.parse.quote(action)
