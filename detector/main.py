@@ -8,6 +8,11 @@ import pyaudio
 import PySimpleGUI as sg
 import sys
 
+import tkinter
+root = tkinter.Tk()
+root.withdraw()
+WIDTH, HEIGHT = root.winfo_screenwidth(), root.winfo_screenheight()
+
 API_URL = 'http://chilaxan.tech/{user}/{device}/{action}'
 PASSWORD = 'best-password-ever'
 
@@ -32,7 +37,7 @@ def main():
         'Detector',
         layout,
         element_justification='c',
-        size=(800,400)
+        size=(WIDTH, HEIGHT)
     ).Finalize()
     known_encodings = []
     known_users = []
