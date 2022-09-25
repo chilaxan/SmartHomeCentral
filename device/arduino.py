@@ -4,14 +4,14 @@ import serial
 PORT = '/dev/ttyACM0'
 
 arduino = serial.Serial(port=PORT, baudrate=115200, timeout=.1)
-dev = Device('latch')
+dev = Device('garage')
 
 @dev.register
-def lock():
+def close():
     arduino.write(b'\x01')
 
 @dev.register
-def unlock():
+def open():
     arduino.write(b'\x00')
 
 dev.run()
