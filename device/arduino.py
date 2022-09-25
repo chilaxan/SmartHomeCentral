@@ -7,11 +7,11 @@ arduino = serial.Serial(port=PORT, baudrate=115200, timeout=.1)
 dev = Device('garage')
 
 @dev.register
-def close():
+def open():
     arduino.write(b'\x01')
 
 @dev.register
-def open():
+def close():
     arduino.write(b'\x00')
 
 dev.run()
