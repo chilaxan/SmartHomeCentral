@@ -5,10 +5,13 @@ Servo myservo;  // create servo object to control a servo
 int pos = 0;    // variable to store the servo position
 char l;
 
+#define CLOSE 80
+#define OPEN 200
+
 void setup() {
   myservo.attach(9);  // attaches the servo on pin 9 to the servo object
   Serial.begin(115200);
-  myservo.write(0);
+  myservo.write(CLOSE);
   while (!Serial) (delay(100));
 }
 
@@ -17,19 +20,13 @@ void loop() {
   Serial.readBytes(&l, 1);
   switch(l) {
     case 0:
-      if (pos != 180) {
-        for (pos = 0; pos < 180; pos += 1) {
-          myservo.write(pos);
-          delay(7);
-        }
+      if (pos != CLOSE) {
+        myservo.write(CLOSE);
       }
       break;
     case 1:
-      if (pos != 0) {
-        for (pos = 180; pos > 0; pos -= 1) {
-          myservo.write(pos);
-          delay(7);
-        }
+      if (pos != OPEN) {
+        myservo.write(OPEN);
       }
       break;
   }
